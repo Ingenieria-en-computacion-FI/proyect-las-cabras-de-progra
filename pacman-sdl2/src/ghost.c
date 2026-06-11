@@ -27,16 +27,16 @@ void setupGhost(int *x, int *y) {
 }
 
 //función para liberar a los fantasmas uno por uno con su velocidad y dirección inicial
-void spawnGhost(int num) { //num para saber que fantasma es (max 4)
-    ghost_speed[num] = 0; //por definir velocidad a la que se mueve
-    ghost_direction[num] = 0; //siempre salen hacia arriba
-    ghost_active[num] = true; //para indicar que yaa está activo el fantasma
+void spawnGhost(int i) { //i para saber que fantasma es (max 4)
+    ghost_speed[i] = 0; //por definir velocidad a la que se mueve
+    ghost_direction[i] = 0; //siempre salen hacia arriba
+    ghost_active[i] = true; //para indicar que yaa está activo el fantasma
 }
 
 //función para controlar salida de los fantasmas
 void releaseGhosts() {
     //revisa si ya salieron los cuatro fantasmas
-    if (active_ghosts >= MAX_GHOSTS) {
+    if (active_ghosts >= MAXGHOSTS) {
         return;
     }
 
@@ -44,29 +44,13 @@ void releaseGhosts() {
     int current_time = (int)SDL_GetTicks();
 
     //va sacando uno por uno al los fantasmas
-    if (active_ghosts == 0 || (current_time - last_release_time >= RELEASE_INTERVAL)) { //si es el primer fantasma o ya el tiempo que en el que toiene que salir el que sigue
+    if (active_ghosts == 0 || (current_time - last_release >= INTERVAL)) { //si es el primer fantasma o ya el tiempo que en el que toiene que salir el que sigue
         
         //liberamos al fantasma que toca
         spawnGhost(active_ghosts);
         
         active_ghosts++; //incrementamos el contador de fantasmas liberados
         last_release = current_time; //reinicia el cronómetro para el siguiente
-    }
-}
-
-//función para que se empiece a mover el fantasma
-void moveGhost(int *x, int *y, int direction, int speed) {
-    if (direction == 0) {
-        *y = *y - speed; // arriba
-    } 
-    else if (direction == 1) {
-        *x = *x + speed; // derecha
-    } 
-    else if (direction == 2) {
-        *y = *y + speed; // abajo
-    } 
-    else if (direction == 3) {
-        *x = *x - speed; // izquierda
     }
 }
 
@@ -116,7 +100,7 @@ void chasePlayer(int player_x, int player_y) { //entran coordenadas del jugador
             //si la distancia es menor a 5 cuadros
             if (distTotal < (5 * 15)) {
                 //compara posiciones para cambiar la dirección hacia el jugador
-                if (player_x < ghost_x[i]) {
+                if (player_y < ghost_y[i]) {
                     ghost_direction[i] = 0; //arriba
                 } 
                 else if (player_x > ghost_x[i]) {
@@ -125,10 +109,57 @@ void chasePlayer(int player_x, int player_y) { //entran coordenadas del jugador
                 else if (player_y > ghost_y[i]) {
                     ghost_direction[i] = 2; //abajo
                 } 
-                else if (player_y < ghost_y[i]) {
+                else if (player_x < ghost_x[i]) {
                     ghost_direction[i] = 3; //izquierda
                 }
             }
+        }
+    }
+}
+
+//función para checar si un fantasma toca al jugador y muera
+bool playerDeath(int player_x, int player_y) {
+    for (int i = 0; i < MAXGHOSTS; i++) {
+        //revisa choque solo con fantasmas activos
+        if (ghost_active[i] == true) {
+            
+            //revisa la distancia entre el jugador y el fantasma
+            int distX = abs(player_x - ghost_x[i]);
+            int distY = abs(player_y - ghost_y[i]);
+
+            //revisa que este en el rango correcto para matar al jugador
+            if (distX <= 0 && distY <= 0) { //falta definir rango
+                return true; //sí lo toca muere
+            }
+        }
+    }
+    return false; //si no, sigue el juego
+}
+
+//función para resetear a los fantasmas al su estado inicial
+void resetGhosts() {
+    active_ghosts = 0; //resetea el contador
+    last_release = (int)SDL_GetTicks(); //resetea el tiempo
+    
+    for(int i = 0; i < MAXGHOSTS; i++) {
+        ghost_active[i] = false; //desactiva a los fantasmas
+        setupGhost(&ghost_x[i], &ghost_y[i]); //regresa a los fantasmas a su posición inicial
+    }
+}
+
+//función principal de fantasmas para eliminar
+void manageGhosts(int player_x, int player_y, char map[15][15]) {
+    
+    //salen los fantasmas
+    releaseGhosts();
+
+    // compara posiciones y cambia la dirección hacia el jugador si está cerca
+    chasePlayer(player_x, player_y);
+
+    //aplica el movimiento y revisa choques con paredes
+    for(int i = 0; i < MAXGHOSTS; i++) {
+        if(ghost_active[i] == true) {
+            updateGhost(&ghost_x[i], &ghost_y[i], &ghost_direction[i], ghost_speed[i], map);
         }
     }
 }
