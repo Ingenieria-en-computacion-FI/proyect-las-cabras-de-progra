@@ -111,43 +111,24 @@ void chasePlayer(int player_x, int player_y) { //entran coordenadas del jugador
             //calcula la distancia entre el jugador y este fantasma (valor absoluto)
             int distX = abs(player_x - ghost_x[i]);
             int distY = abs(player_y - ghost_y[i]);
-            int totalDist = distX + distY;
+            int distTotal = distX + distY;
 
             //si la distancia es menor a 5 cuadros
-            if (totalDist < (5 * 15)) {
-                // Compara posiciones para cambiar la dirección hacia el jugador
-                if (player_x > ghost_x[i]) {
-                    ghost_direction[i] = 1; // Derecha
+            if (distTotal < (5 * 15)) {
+                //compara posiciones para cambiar la dirección hacia el jugador
+                if (player_x < ghost_x[i]) {
+                    ghost_direction[i] = 0; //arriba
                 } 
-                else if (player_x < ghost_x[i]) {
-                    ghost_direction[i] = 3; // Izquierda
+                else if (player_x > ghost_x[i]) {
+                    ghost_direction[i] = 1; //derecha
                 } 
                 else if (player_y > ghost_y[i]) {
-                    ghost_direction[i] = 2; // Abajo
+                    ghost_direction[i] = 2; //abajo
                 } 
                 else if (player_y < ghost_y[i]) {
-                    ghost_direction[i] = 0; // Arriba
+                    ghost_direction[i] = 3; //izquierda
                 }
             }
         }
     }
-}
-
-// Función para checar si un fantasma toca al jugador y este muere
-bool checkPlayerDeath(int player_x, int player_y) {
-    for (int i = 0; i < MAXGHOSTS; i++) {
-        // Solo revisa colisiones con fantasmas activos
-        if (ghost_active[i] == true) {
-            
-            int distX = abs(player_x - ghost_x[i]);
-            int distY = abs(player_y - ghost_y[i]);
-
-            // 7 es aproximadamente la mitad de 15 (el tamaño de tu cuadro). 
-            // Esto da un margen para que el choque se sienta natural.
-            if (distX < 7 && distY < 7) {
-                return true; // Sí lo tocó, el jugador muere
-            }
-        }
-    }
-    return false; // Terminó de revisar a todos y nadie lo tocó
 }
