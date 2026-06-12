@@ -1,0 +1,158 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <SDL2/SDL.h>
+
+#include "Ghosts.h"
+#include "Player.h"
+#include "Map.h"
+
+char map[ROW][COL];
+
+void renderGhosts(SDL_Renderer *renderer, SDL_Texture *ghostTexture, int *ghost_x, int *ghost_y, int *ghost_direction, bool *ghost_active, int *ghost_frame, unsigned int *ghost_lastFrameTime) {
+    unsigned int currentTime = SDL_GetTicks();
+    int animationSpeed = 150;
+
+    if (currentTime > *ghost_lastFrameTime + animationSpeed) {
+        (*ghost_frame)++; 
+        *ghost_lastFrameTime = currentTime;
+    }
+
+    for (int i = 0; i < MAXGHOSTS; i++) {
+        if (ghost_active[i] == true) {
+            SDL_Rect srcRect;
+            SDL_Rect destRect;
+
+            int offsetX = 456;
+            int offsetY = 64;
+            int spriteWidth = 16;
+            int spriteHeight = 16;
+
+            int row_sprite = i;
+            int baseCol = 0;
+
+            if (ghost_direction[i] == 0) baseCol = 4;
+            else if (ghost_direction[i] == 1) baseCol = 0;
+            else if (ghost_direction[i] == 2) baseCol = 6;
+            else if (ghost_direction[i] == 3) baseCol = 2;
+
+            int finalCol = baseCol + ((*ghost_frame) % 2);
+
+            srcRect.x = offsetX + (finalCol * spriteWidth);
+            srcRect.y = offsetY + (row_sprite * spriteHeight);
+            srcRect.w = spriteWidth;
+            srcRect.h = spriteHeight;
+
+            destRect.x = ghost_x[i];
+            destRect.y = ghost_y[i];
+            destRect.w = 15; 
+            destRect.h = 15;
+
+            SDL_RenderCopy(renderer, ghostTexture, &srcRect, &destRect);
+        }
+    }
+}
+
+void setupGhost(int i, int *ghost_x, int *ghost_y) {
+    ghost_x[i] = 0;
+    ghost_y[i] = 0;
+}
+
+void spawnGhost(int i, int *ghost_speed, int *ghost_direction, bool *ghost_active) {
+    ghost_speed[i] = 4;
+    ghost_direction[i] = 0;
+    ghost_active[i] = true;
+}
+
+void releaseGhosts(int *active_ghosts, int *last_release, int *ghost_speed, int *ghost_direction, bool *ghost_active) {
+    if (*active_ghosts >= MAXGHOSTS) {
+        return;
+    }
+
+    int current_time = (int)SDL_GetTicks();
+
+    if (*active_ghosts == 0 || (current_time - *last_release >= INTERVAL)) {
+        spawnGhost(*active_ghosts, ghost_speed, ghost_direction, ghost_active);
+
+        (*active_ghosts)++; 
+        *last_release = current_time;
+    }
+}
+
+void updateGhost(int *x, int *y, int *direction, int speed, char map[ROW][COL]) {
+    int nextX = *x;
+    int nextY = *y;
+    int i, j;
+
+    if (*direction == 0) nextY = nextY - speed;
+    else if (*direction == 1) nextX = nextX + speed;
+    else if (*direction == 2) nextY = nextY + speed;
+    else if (*direction == 3) nextX = nextX - speed;
+
+    i = nextX / TILE_SIZE; 
+    j = nextY / TILE_SIZE; 
+
+    if (i >= 0 && i < COL && j >= 0 && j < ROW) {
+        if (map[j][i] == '#') {
+            *direction = rand() % 4;
+        } else {
+            *x = nextX;
+            *y = nextY;
+        }
+    }
+}
+
+void chasePlayer(Player *player, int *ghost_x, int *ghost_y, int *ghost_direction, bool *ghost_active) {
+    for (int i = 0; i < MAXGHOSTS; i++) { 
+        if (ghost_active[i] == true) {
+            int distX = abs(player->x - ghost_x[i]);
+            int distY = abs(player->y - ghost_y[i]);
+            int distTotal = distX + distY;
+
+            // Manteniendo la proporción de distancia visual de 5 cuadros
+            if (distTotal < (5 * TILE_SIZE)) {
+                if (player->y < ghost_y[i]) ghost_direction[i] = 0;
+                else if (player->x > ghost_x[i]) ghost_direction[i] = 1;
+                else if (player->y > ghost_y[i]) ghost_direction[i] = 2;
+                else if (player->x < ghost_x[i]) ghost_direction[i] = 3;
+            }
+        }
+    }
+}
+
+bool playerDeath(Player *player, int *ghost_x, int *ghost_y, bool *ghost_active) {
+    for (int i = 0; i < MAXGHOSTS; i++) {
+        if (ghost_active[i] == true) {
+            int distX = abs(player->x - ghost_x[i]);
+            int distY = abs(player->y - ghost_y[i]);
+
+            if (distX <= 0 && distY <= 0) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+void resetGhosts(int *active_ghosts, int *last_release, bool *ghost_active, int *ghost_x, int *ghost_y) {
+    *active_ghosts = 0;
+    *last_release = (int)SDL_GetTicks();
+
+    for(int i = 0; i < MAXGHOSTS; i++) {
+        ghost_active[i] = false;
+        setupGhost(i, ghost_x, ghost_y);
+    }
+}
+
+void manageGhosts(Player *player, int *ghost_x, int *ghost_y, int *ghost_direction, int *ghost_speed, bool *ghost_active, int *active_ghosts, int *last_release, char map[ROW][COL]) {
+
+    releaseGhosts(active_ghosts, last_release, ghost_speed, ghost_direction, ghost_active);
+
+    chasePlayer(player, ghost_x, ghost_y, ghost_direction, ghost_active);
+
+    for(int i = 0; i < MAXGHOSTS; i++) {
+        if(ghost_active[i] == true) {
+            updateGhost(&ghost_x[i], &ghost_y[i], &ghost_direction[i], ghost_speed[i], map);
+        }
+    }
+}
