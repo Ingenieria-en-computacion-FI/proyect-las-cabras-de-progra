@@ -1,5 +1,5 @@
-#ifndef PLAYER_H
-#define PLAYER_H
+#ifndef JUG1_H
+#define JUG1_H
 
 #include <SDL2/SDL.h>
 #include <stdbool.h>
@@ -7,40 +7,27 @@
 #define WIDTH 800
 #define HEIGHT 600
 
-typedef enum
-{
+typedef enum {
     STATE_IDLE,
     STATE_WALK
 } State;
 
-typedef struct
-{
-    /* Posición */
+typedef struct {
     int x;
     int y;
-
-    /* Velocidad */
     int speed;
     int velX;
     int velY;
-
-    /* Animación */
     int frame;
     int direction;
-
     State state;
     State previousState;
-
     SDL_RendererFlip flip;
-
     bool moving;
-
-    Uint32 lastFrameTime;
-
+    unsigned int lastFrameTime;
 } Player;
 
-/* Prototipo de la nueva función */
-
+// Prototipo de tu función
 void jug1(
     Player *player,
     SDL_Renderer *renderer,

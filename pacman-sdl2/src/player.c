@@ -1,3 +1,5 @@
+#include "Player.h"
+
 void jug1(
     Player *player,
     SDL_Renderer *renderer,
@@ -27,8 +29,6 @@ void jug1(
         {472,0,13,14}
     };
 
-    /* Inicialización */
-
     if(!initialized)
     {
         player->x = WIDTH / 2;
@@ -53,8 +53,6 @@ void jug1(
 
         initialized = true;
     }
-
-    /* INPUT */
 
     player->velX = 0;
     player->velY = 0;
@@ -90,12 +88,8 @@ void jug1(
         player->moving = true;
     }
 
-    /* MOVIMIENTO */
-
     player->x += player->velX;
     player->y += player->velY;
-
-    /* COLISIONES */
 
     const int width = 30;
     const int height = 50;
@@ -112,8 +106,6 @@ void jug1(
     if(player->y + height > HEIGHT)
         player->y = HEIGHT - height;
 
-    /* ESTADO */
-
     player->state =
         player->moving ? STATE_WALK : STATE_IDLE;
 
@@ -122,8 +114,6 @@ void jug1(
         player->frame = 0;
         player->previousState = player->state;
     }
-
-    /* ANIMACIÓN */
 
     int animationSpeed =
         (player->state == STATE_IDLE)
@@ -138,8 +128,6 @@ void jug1(
         player->frame++;
         player->lastFrameTime = currentTime;
     }
-
-    /* SPRITE */
 
     SDL_Rect src;
 
@@ -167,8 +155,6 @@ void jug1(
                 src = idle[0];
         }
     }
-
-    /* RENDER */
 
     SDL_Rect dest = {
         player->x,
