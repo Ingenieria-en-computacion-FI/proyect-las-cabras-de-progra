@@ -4,8 +4,8 @@
 #include <SDL2/SDL.h>
 #include <stdbool.h>
 
-#define FILAS 26
-#define COLUMNAS 28
+#define ROW 26
+#define COL 28
 #define TILE_SIZE 32
 #define WINDOW_WIDTH (COLUMNAS * TILE_SIZE)
 #define WINDOW_HEIGHT (FILAS * TILE_SIZE)

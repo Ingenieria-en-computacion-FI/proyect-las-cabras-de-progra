@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "Map.h"
 
-char mapa[FILAS][COLUMNAS];
+char map[ROW][COL]; 
 SDL_Texture* texturaLaberinto = NULL;
 SDL_Rect botonCerrar = { WINDOW_WIDTH - 44, 8, 36, 24 };
 
@@ -13,14 +13,14 @@ void cargarMapa(const char* nombreArchivo) {
         return;
     }
 
-    for (int i = 0; i < FILAS; i++) {
-        for (int j = 0; j < COLUMNAS; j++) {
+    for (int i = 0; i < ROW; i++) {
+        for (int j = 0; j < COL; j++) {
             int c = fgetc(archivo);
             while (c == '\n' || c == '\r') {
                 c = fgetc(archivo);
             }
             if (c == EOF) break;
-            mapa[i][j] = (char)c;
+            map[i][j] = (char)c; 
         }
     }
     fclose(archivo);
@@ -32,10 +32,10 @@ bool cargarTexturas(SDL_Renderer* renderer) {
         printf("Error al cargar laberinto.bmp: %s\n", SDL_GetError());
         return false;
     }
-   
+
     texturaLaberinto = SDL_CreateTextureFromSurface(renderer, superficieTemporal);
-    SDL_FreeSurface(superficieTemporal); 
-   
+    SDL_FreeSurface(superficieTemporal);
+
     if (texturaLaberinto == NULL) {
         printf("Error al crear la textura del mapa: %s\n", SDL_GetError());
         return false;
@@ -48,9 +48,9 @@ void renderizarMapa(SDL_Renderer* renderer) {
         SDL_RenderCopy(renderer, texturaLaberinto, NULL, NULL);
     }
 
-    for (int r = 0; r < FILAS; r++) {
-        for (int c = 0; c < COLUMNAS; c++) {
-            if (mapa[r][c] == ' ') {
+    for (int r = 0; r < ROW; r++) {
+        for (int c_index = 0; c_index < COL; c_index++) {
+            if (map[r][c_index] == ' ') {
             }
         }
     }
