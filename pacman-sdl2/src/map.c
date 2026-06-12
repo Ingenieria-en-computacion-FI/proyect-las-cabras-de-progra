@@ -1,8 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include "Map.h"
 
-char map[ROW][COL]; 
+
+char map[ROW][COL];
+
 SDL_Texture* texturaLaberinto = NULL;
 
 SDL_Rect botonCerrar = { WIDTH - 44, 8, 36, 24 };
@@ -17,26 +22,28 @@ void cargarMapa(const char* nombreArchivo) {
     for (int i = 0; i < ROW; i++) {
         for (int j = 0; j < COL; j++) {
             int c = fgetc(archivo);
+           
             while (c == '\n' || c == '\r') {
                 c = fgetc(archivo);
             }
             if (c == EOF) break;
-            map[i][j] = (char)c; 
+           
+            map[i][j] = (char)c;
         }
     }
     fclose(archivo);
 }
-
-bool cargarTexturas(SDL_Renderer* renderer) {
-    SDL_Surface* superficieTemporal = SDL_LoadBMP("laberinto.bmp");
+    
+bool cargarTexturas(SDL_Renderer* renderer, const char* rutaImagen) {
+    SDL_Surface* superficieTemporal = IMG_Load(rutaImagen);
     if (superficieTemporal == NULL) {
-        printf("Error al cargar laberinto.bmp: %s\n", SDL_GetError());
+        printf("Error al cargar %s: %s\n", rutaImagen, IMG_GetError());
         return false;
     }
-
+   
     texturaLaberinto = SDL_CreateTextureFromSurface(renderer, superficieTemporal);
-    SDL_FreeSurface(superficieTemporal);
-
+    SDL_FreeSurface(superficieTemporal); // Liberar memoria temporal de la superficie
+   
     if (texturaLaberinto == NULL) {
         printf("Error al crear la textura del mapa: %s\n", SDL_GetError());
         return false;
@@ -50,8 +57,10 @@ void renderizarMapa(SDL_Renderer* renderer) {
     }
 
     for (int r = 0; r < ROW; r++) {
-        for (int c_index = 0; c_index < COL; c_index++) {
-            if (map[r][c_index] == ' ') {
+        for (int c = 0; c < COL; c++) {
+            if (map[r][c] == ' ') {
+                SDL_Rect espacioVacio = { c * TILE_SIZE, r * TILE_SIZE, TILE_SIZE, TILE_SIZE };
+                SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
             }
         }
     }

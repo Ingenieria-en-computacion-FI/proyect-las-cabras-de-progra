@@ -23,7 +23,9 @@ extern SDL_Texture* texturaLaberinto;
 extern SDL_Rect botonCerrar;
 
 void cargarMapa(const char* nombreArchivo);
-bool cargarTexturas(SDL_Renderer* renderer);
+
+bool cargarTexturas(SDL_Renderer* renderer, const char* rutaImagen);
+
 void renderizarMapa(SDL_Renderer* renderer);
 
 #endif
