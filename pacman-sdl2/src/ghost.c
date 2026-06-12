@@ -20,6 +20,74 @@ bool ghost_active[MAXGHOSTS] = {false, false, false, false};
 int active_ghosts = 0; //fantasmas liberados
 int last_release = 0; //cuándo se liberó el último fantasma
 
+//variables para la animación
+int ghost_frame = 0; //cuadro actual de la animación
+unsigned int ghost_lastFrameTime = 0; //tiempo en el que cambió de cuadro
+
+//función para dibujar a los fantasmas con sus imagenes
+void renderGhosts(SDL_Renderer *renderer, SDL_Texture *ghostTexture) {
+    
+    //obtiene el tiempo actual para la animación
+    unsigned int currentTime = SDL_GetTicks();
+    int animationSpeed = 150; //velocidad a la que se mueven
+    
+    //revisa si ya es tiempo de cambiar de cuadro de animación
+    if (currentTime > ghost_lastFrameTime + animationSpeed) {
+        ghost_frame++;
+        ghost_lastFrameTime = currentTime;
+    }
+
+    //revisa y dibuja a todos los fantasmas
+    for (int i = 0; i < MAXGHOSTS; i++) {
+        //solo dibuja a los fantasmas activos
+        if (ghost_active[i] == true) {
+            
+            SDL_Rect srcRect; //cuadro a recortar de la imagen
+            SDL_Rect destRect; //cuadro donde se va a dibujar
+            
+            int offsetX = 456; //coordenada en x de donde empiezan los fantasmas en el png
+            int offsetY = 64; //coordenada en y de donde empiezan en el png
+            int spriteWidth = 16; //ancho del fantasma
+            int spriteHeight = 16; //alto del fantasma
+            
+            int row = i; //fila del fantasma (0 es rojo, 1 es rosa...)
+            int baseCol = 0; //columna inicial
+            
+            //calcula la columna inicial dependiendo de la dirección
+            if (ghost_direction[i] == 0) {
+                baseCol = 4; //arriba
+            } 
+            else if (ghost_direction[i] == 1) {
+                baseCol = 0; //derecha
+            } 
+            else if (ghost_direction[i] == 2) {
+                baseCol = 6; //abajo
+            } 
+            else if (ghost_direction[i] == 3) {
+                baseCol = 2; //izquierda
+            }
+            
+            //suma el cuadro de animación para alternar el dibujo
+            int finalCol = baseCol + (ghost_frame % 2);
+            
+            //llena los datos del cuadro a recortar
+            srcRect.x = offsetX + (finalCol * spriteWidth);
+            srcRect.y = offsetY + (row * spriteHeight);
+            srcRect.w = spriteWidth;
+            srcRect.h = spriteHeight;
+            
+            //llena los datos de la posición en la ventana
+            destRect.x = ghost_x[i];
+            destRect.y = ghost_y[i];
+            destRect.w = 15; //tamaño en x en el mapa
+            destRect.h = 15; //tamaño en y en el mapa
+            
+            //dibuja el fantasma en la pantalla
+            SDL_RenderCopy(renderer, ghostTexture, &srcRect, &destRect);
+        }
+    }
+}
+
 //Función para colocar a cada fantasma en su posición inicial
 void setupGhost(int i) {
     ghost_x[i] = 0;
@@ -28,7 +96,7 @@ void setupGhost(int i) {
 
 //función para liberar a los fantasmas uno por uno con su velocidad y dirección inicial
 void spawnGhost(int i) { //i para saber que fantasma es (max 4)
-    ghost_speed[i] = 0; //por definir velocidad a la que se mueve
+    ghost_speed[i] = 4; //por definir velocidad a la que se mueve
     ghost_direction[i] = 0; //siempre salen hacia arriba
     ghost_active[i] = true; //para indicar que yaa está activo el fantasma
 }
