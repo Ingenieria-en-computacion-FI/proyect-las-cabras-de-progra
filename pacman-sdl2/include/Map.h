@@ -4,28 +4,41 @@
 #include <SDL2/SDL.h>
 #include <stdbool.h>
 
+/* Dimensiones del mapa */
+
 #define ROW 26
 #define COL 28
-#define TILE_SIZE 32
+#define TILE_SIZE 30
 
-#define WIDTH (COL * TILE_SIZE)
-#define HEIGHT (ROW * TILE_SIZE)
+/* Dimensiones de la ventana */
 
-typedef struct {
+#define WINDOW_WIDTH  (COL * TILE_SIZE)
+#define WINDOW_HEIGHT (ROW * TILE_SIZE)
+
+/* Entidad genérica */
+
+typedef struct
+{
     int x;
     int y;
     int dx;
     int dy;
 } Entity;
 
-extern char map[ROW][COL]; 
-extern SDL_Texture* texturaLaberinto;
+/* Variables globales */
+
+extern char map[ROW][COL];
+
+extern SDL_Texture *texturaLaberinto;
+
 extern SDL_Rect botonCerrar;
 
-void cargarMapa(const char* nombreArchivo);
+/* Funciones */
 
-bool cargarTexturas(SDL_Renderer* renderer, const char* rutaImagen);
+void cargarMapa(const char *nombreArchivo);
 
-void renderizarMapa(SDL_Renderer* renderer);
+bool cargarTexturas(SDL_Renderer *renderer,const char *rutaImagen);
+
+void renderizarMapa(SDL_Renderer *renderer);
 
 #endif
