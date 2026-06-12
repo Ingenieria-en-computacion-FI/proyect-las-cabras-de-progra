@@ -1,0 +1,19 @@
+SubProceso cargarTexturas(renderer, rutaImagen)
+    Definir superficieTemporal Como Superficie
+    superficieTemporal <- IMG_Load(rutaImagen)
+    
+    Si superficieTemporal == NULL Entonces
+        Imprimir "Error al cargar la imagen"
+        Retornar Falso
+    FinSi
+    
+    texturaLaberinto <- SDL_CreateTextureFromSurface(renderer, superficieTemporal)
+    SDL_FreeSurface(superficieTemporal) // Liberar memoria temporal
+    
+    Si texturaLaberinto == NULL Entonces
+        Imprimir "Error al crear la textura del mapa"
+        Retornar Falso
+    FinSi
+    
+    Retornar Verdadero
+FinSubProceso

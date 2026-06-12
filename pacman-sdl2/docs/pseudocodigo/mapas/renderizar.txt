@@ -1,0 +1,24 @@
+SubProceso renderizarMapa(renderer)
+    Si texturaLaberinto <> NULL Entonces
+        SDL_RenderCopy(renderer, texturaLaberinto, NULL, NULL)
+    FinSi
+    
+    Para r <- 0 Hasta ROW-1 Hacer
+        Para c <- 0 Hasta COL-1 Hacer
+            Si map[r, c] == ' ' Entonces
+                Definir espacioVacio Como Rectangulo
+                espacioVacio.x <- c * TILE_SIZE
+                espacioVacio.y <- r * TILE_SIZE
+                espacioVacio.w <- TILE_SIZE
+                espacioVacio.h <- TILE_SIZE
+            FinSi
+        FinPara
+    FinPara
+    
+    // Dibujar el botón de cerrar y la "X" en la interfaz
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255)
+    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255)
+    SDL_RenderDrawRect(renderer, botonCerrar)
+    SDL_RenderDrawLine(renderer, botonCerrar.x + 10, botonCerrar.y + 5, botonCerrar.x + 26, botonCerrar.y + 19)
+    SDL_RenderDrawLine(renderer, botonCerrar.x + 26, botonCerrar.y + 5, botonCerrar.x + 10, botonCerrar.y + 19)
+FinSubProceso

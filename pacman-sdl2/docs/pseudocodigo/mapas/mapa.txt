@@ -1,0 +1,28 @@
+SubProceso cargarMapa(nombreArchivo)
+    Definir archivo Como Archivo
+    archivo <- fopen(nombreArchivo, "r")
+    
+    Si archivo == NULL Entonces
+        Imprimir "Error: No se pudo abrir el archivo"
+        Retornar
+    FinSi
+    
+    Para i <- 0 Hasta ROW-1 Hacer
+        Para j <- 0 Hasta COL-1 Hacer
+            Definir c Como Entero
+            c <- fgetc(archivo)
+            
+            Mientras c == '\n' O c == '\r' Hacer
+                c <- fgetc(archivo)
+            FinMientras
+            
+            Si c == EOF Entonces
+                Romper // Sale del ciclo
+            FinSi
+            
+            map[i, j] <- ConvertirACaracter(c)
+        FinPara
+    FinPara
+    
+    fclose(archivo)
+FinSubProceso
