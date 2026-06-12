@@ -21,9 +21,9 @@ int active_ghosts = 0; //fantasmas liberados
 int last_release = 0; //cuándo se liberó el último fantasma
 
 //Función para colocar a cada fantasma en su posición inicial
-void setupGhost(int *x, int *y) {
-    *x = 0;
-    *y = 0;
+void setupGhost(int i) {
+    ghost_x[i] = 0;
+    ghost_y[i] = 0;
 }
 
 //función para liberar a los fantasmas uno por uno con su velocidad y dirección inicial
@@ -143,7 +143,7 @@ void resetGhosts() {
     
     for(int i = 0; i < MAXGHOSTS; i++) {
         ghost_active[i] = false; //desactiva a los fantasmas
-        setupGhost(&ghost_x[i], &ghost_y[i]); //regresa a los fantasmas a su posición inicial
+        setupGhost(i); //regresa a los fantasmas a su posición inicial
     }
 }
 
