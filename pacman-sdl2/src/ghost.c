@@ -3,8 +3,7 @@
 #include <stdbool.h>
 #include <SDL2/SDL.h>
 
-#define MAXGHOSTS 4 //la cantidad de fantasmas
-#define INTERVAL 7000 //cada cuanto salen los fantasmas (por definir)
+#include "Ghosts.h"
 
 //cambio de variables para poder tener 4 fantasmas
 int ghost_x[MAXGHOSTS]; //coordenada en x de cada fantasma
