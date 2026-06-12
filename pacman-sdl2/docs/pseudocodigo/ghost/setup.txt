@@ -1,0 +1,4 @@
+SubProceso setupGhost(i, ghost_x, ghost_y)
+    ghost_x[i] <- 0
+    ghost_y[i] <- 0
+FinSubProceso

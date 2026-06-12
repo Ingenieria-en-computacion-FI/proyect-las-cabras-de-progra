@@ -1,0 +1,18 @@
+SubProceso chasePlayer(player, ghost_x, ghost_y, ghost_direction, ghost_active)
+    Para i <- 0 Hasta MAXGHOSTS-1 Hacer
+        Si ghost_active[i] == Verdadero Entonces
+            Definir distX, distY, distTotal Como Entero
+            distX <- ValorAbsoluto(player.x - ghost_x[i])
+            distY <- ValorAbsoluto(player.y - ghost_y[i])
+            distTotal <- distX + distY
+            
+            Si distTotal < (5 * TILE_SIZE) Entonces
+                Si player.y < ghost_y[i] Entonces ghost_direction[i] <- 0
+                Sino Si player.x > ghost_x[i] Entonces ghost_direction[i] <- 1
+                Sino Si player.y > ghost_y[i] Entonces ghost_direction[i] <- 2
+                Sino Si player.x < ghost_x[i] Entonces ghost_direction[i] <- 3
+                FinSi
+            FinSi
+        FinSi
+    FinPara
+FinSubProceso

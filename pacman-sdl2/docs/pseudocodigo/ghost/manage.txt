@@ -1,0 +1,10 @@
+SubProceso manageGhosts(player, ghost_x, ghost_y, ghost_direction, ghost_speed, ghost_active, active_ghosts, last_release, map)
+    releaseGhosts(active_ghosts, last_release, ghost_speed, ghost_direction, ghost_active)
+    chasePlayer(player, ghost_x, ghost_y, ghost_direction, ghost_active)
+    
+    Para i <- 0 Hasta MAXGHOSTS-1 Hacer
+        Si ghost_active[i] == Verdadero Entonces
+            updateGhost(ghost_x[i], ghost_y[i], ghost_direction[i], ghost_speed[i], map)
+        FinSi
+    FinPara
+FinSubProceso

@@ -1,0 +1,5 @@
+SubProceso spawnGhost(i, ghost_speed, ghost_direction, ghost_active)
+    ghost_speed[i] <- 4
+    ghost_direction[i] <- 0
+    ghost_active[i] <- Verdadero
+FinSubProceso

@@ -1,0 +1,22 @@
+SubProceso renderGhosts(renderer, ghostTexture, ghost_x, ghost_y, ghost_direction, ghost_active, ghost_frame, ghost_lastFrameTime)
+    Definir currentTime Como Entero <- SDL_GetTicks()
+    Si currentTime > ghost_lastFrameTime + 150 Entonces
+        ghost_frame <- ghost_frame + 1
+        ghost_lastFrameTime <- currentTime
+    FinSi
+    
+    Para i <- 0 Hasta MAXGHOSTS-1 Hacer
+        Si ghost_active[i] == Verdadero Entonces
+            Definir baseCol, finalCol Como Entero
+            Si ghost_direction[i] == 0 Entonces baseCol <- 4
+            Sino Si ghost_direction[i] == 1 Entonces baseCol <- 0
+            Sino Si ghost_direction[i] == 2 Entonces baseCol <- 6
+            Sino Si ghost_direction[i] == 3 Entonces baseCol <- 2
+            FinSi
+            
+            finalCol <- baseCol + (ghost_frame % 2)
+            // Configurar srcRect y destRect...
+            SDL_RenderCopy(renderer, ghostTexture, srcRect, destRect)
+        FinSi
+    FinPara
+FinSubProceso

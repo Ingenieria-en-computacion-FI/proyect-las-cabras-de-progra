@@ -1,0 +1,14 @@
+SubProceso releaseGhosts(active_ghosts, last_release, ghost_speed, ghost_direction, ghost_active)
+    Si active_ghosts >= MAXGHOSTS Entonces
+        Retornar
+    FinSi
+    
+    Definir current_time Como Entero
+    current_time <- SDL_GetTicks()
+    
+    Si active_ghosts == 0 O (current_time - last_release >= INTERVAL) Entonces
+        spawnGhost(active_ghosts, ghost_speed, ghost_direction, ghost_active)
+        active_ghosts <- active_ghosts + 1
+        last_release <- current_time
+    FinSi
+FinSubProceso

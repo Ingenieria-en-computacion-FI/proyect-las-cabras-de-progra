@@ -1,0 +1,28 @@
+SubProceso jugl(player, renderer, texture, keyboard)
+    Si NO initialized Entonces
+        player.x <- WIDTH / 2
+        player.y <- HEIGHT / 2
+        // Inicializar velocidad y estado...
+        initialized <- Verdadero
+    FinSi
+    
+    player.velX <- 0
+    player.velY <- 0
+    player.moving <- Falso
+    
+    Si keyboard[RIGHT] Entonces player.velX <- speed; player.direction <- 0; player.moving <- Verdadero FinSi
+    Si keyboard[LEFT] Entonces player.velX <- -speed; player.direction <- 0; player.moving <- Verdadero FinSi
+    Si keyboard[UP] Entonces player.velY <- -speed; player.direction <- 1; player.moving <- Verdadero FinSi
+    Si keyboard[DOWN] Entonces player.velY <- speed; player.direction <- 2; player.moving <- Verdadero FinSi
+    
+    player.x <- player.x + player.velX
+    player.y <- player.y + player.velY
+    
+    // Aplicar límites de pantalla (WIDTH/HEIGHT)
+    Si player.x < 0 Entonces player.x <- WIDTH - width FinSi
+    // ...
+    
+    Si player.moving Entonces player.state <- WALK Sino player.state <- IDLE FinSi
+    
+    // Calcular animación y renderizar con SDL_RenderCopyEx
+FinSubProceso

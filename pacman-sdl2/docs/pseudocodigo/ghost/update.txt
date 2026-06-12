@@ -1,0 +1,23 @@
+SubProceso updateGhost(x, y, direction, speed, map)
+    Definir nextX, nextY, i, j Como Entero
+    nextX <- x
+    nextY <- y
+    
+    Si direction == 0 Entonces nextY <- nextY - speed
+    Sino Si direction == 1 Entonces nextX <- nextX + speed
+    Sino Si direction == 2 Entonces nextY <- nextY + speed
+    Sino Si direction == 3 Entonces nextX <- nextX - speed
+    FinSi
+    
+    i <- nextX / TILE_SIZE
+    j <- nextY / TILE_SIZE
+    
+    Si i >= 0 Y i < COL Y j >= 0 Y j < ROW Entonces
+        Si map[j,i] == '#' Entonces
+            direction <- Aleatorio(0, 3)
+        Sino
+            x <- nextX
+            y <- nextY
+        FinSi
+    FinSi
+FinSubProceso
