@@ -1,17 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-#include "Map.h"
-
-
-char map[ROW][COL];
-
-SDL_Texture* texturaLaberinto = NULL;
-
-SDL_Rect botonCerrar = { WIDTH - 44, 8, 36, 24 };
-
 void cargarMapa(const char* nombreArchivo) {
     FILE* archivo = fopen(nombreArchivo, "r");
     if (archivo == NULL) {
@@ -61,6 +47,7 @@ void renderizarMapa(SDL_Renderer* renderer) {
             if (map[r][c] == ' ') {
                 SDL_Rect espacioVacio = { c * TILE_SIZE, r * TILE_SIZE, TILE_SIZE, TILE_SIZE };
                 SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+                SDL_RenderFillRect(renderer, &espacioVacio);
             }
         }
     }

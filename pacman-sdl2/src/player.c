@@ -1,5 +1,3 @@
-#include "Player.h"
-
 void jug1(
     Player *player,
     SDL_Renderer *renderer,
@@ -29,10 +27,12 @@ void jug1(
         {472,0,13,14}
     };
 
+    /* Inicialización */
+
     if(!initialized)
     {
         player->x = WIDTH / 2;
-        player->y = HEIGHT / 2;
+        player->y = (HEIGHT / 2)+125;
 
         player->velX = 0;
         player->velY = 0;
@@ -53,6 +53,8 @@ void jug1(
 
         initialized = true;
     }
+
+    /* INPUT */
 
     player->velX = 0;
     player->velY = 0;
@@ -88,23 +90,57 @@ void jug1(
         player->moving = true;
     }
 
+    /* MOVIMIENTO */
+
     player->x += player->velX;
     player->y += player->velY;
 
-    const int width = 30;
-    const int height = 50;
+    /* COLISIONES */
+    /* MOVIMIENTO CON COLISIÓN POR ESQUINAS */
+
+    int nextX = player->x + player->velX;
+    int nextY = player->y + player->velY;
+
+    const int width = 15;
+    const int height = 25;
+
+    int left   = nextX / TILE_SIZE;
+    int right  = (nextX + width - 1) / TILE_SIZE;
+    int top    = nextY / TILE_SIZE;
+    int bottom = (nextY + height - 1) / TILE_SIZE;
+
+    bool collision = false;
+
+    if(map[top][left] == '#' ||map[top][right] == '#' ||map[bottom][left] == '#' ||map[bottom][right] == '#')
+    {
+        collision = true;
+        player->x = player->x -player->velX;
+        player->y = player->y -player->velY;    
+    }
+
+    if(!collision)
+    {
+        player->x = nextX;
+        player->y = nextY;
+    }
 
     if(player->x < 0)
-        player->x = WIDTH - width;
+        player->x = WINDOW_WIDTH  - width;
 
-    if(player->x + width > WIDTH)
+    if(player->x + width > WINDOW_WIDTH )
         player->x = 0;
 
     if(player->y < 0)
         player->y = 0;
 
-    if(player->y + height > HEIGHT)
-        player->y = HEIGHT - height;
+    if(player->y + height > WINDOW_HEIGHT)
+        player->y = WINDOW_HEIGHT - height;
+    
+
+
+
+        
+    /* ESTADO */
 
     player->state =
         player->moving ? STATE_WALK : STATE_IDLE;
@@ -114,6 +150,8 @@ void jug1(
         player->frame = 0;
         player->previousState = player->state;
     }
+
+    /* ANIMACIÓN */
 
     int animationSpeed =
         (player->state == STATE_IDLE)
@@ -128,6 +166,8 @@ void jug1(
         player->frame++;
         player->lastFrameTime = currentTime;
     }
+
+    /* SPRITE */
 
     SDL_Rect src;
 
@@ -156,11 +196,13 @@ void jug1(
         }
     }
 
+    /* RENDER */
+
     SDL_Rect dest = {
         player->x,
         player->y,
-        30,
-        50
+        15,
+        25
     };
 
     SDL_RenderCopyEx(
