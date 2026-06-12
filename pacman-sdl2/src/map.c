@@ -4,7 +4,8 @@
 
 char map[ROW][COL]; 
 SDL_Texture* texturaLaberinto = NULL;
-SDL_Rect botonCerrar = { WINDOW_WIDTH - 44, 8, 36, 24 };
+
+SDL_Rect botonCerrar = { WIDTH - 44, 8, 36, 24 };
 
 void cargarMapa(const char* nombreArchivo) {
     FILE* archivo = fopen(nombreArchivo, "r");

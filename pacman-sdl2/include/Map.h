@@ -7,8 +7,9 @@
 #define ROW 26
 #define COL 28
 #define TILE_SIZE 32
-#define WINDOW_WIDTH (COLUMNAS * TILE_SIZE)
-#define WINDOW_HEIGHT (FILAS * TILE_SIZE)
+
+#define WIDTH (COL * TILE_SIZE)
+#define HEIGHT (ROW * TILE_SIZE)
 
 typedef struct {
     int x;
@@ -17,7 +18,7 @@ typedef struct {
     int dy;
 } Entity;
 
-extern char mapa[FILAS][COLUMNAS];
+extern char map[ROW][COL]; 
 extern SDL_Texture* texturaLaberinto;
 extern SDL_Rect botonCerrar;
 
