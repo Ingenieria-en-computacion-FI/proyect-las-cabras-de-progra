@@ -20,6 +20,8 @@
 
 **Ordoñez Reveles Héctor Eduardo**
 
+**Sánchez Durán Fernando Isaias**
+
 **Villaseñor Juárez Iván**
 
 ## **Semestre: 2026-2**
